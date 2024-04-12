@@ -1,7 +1,6 @@
 import string from '@poppinss/utils/string'
 
 import type { Duration } from './types/main.js'
-
 /**
  * Resolve a TTL value to a number in milliseconds
  */
@@ -51,4 +50,38 @@ export function createIsomorphicDestructurable<
   })
 
   return clone as T & A
+}
+
+/**
+ * Checks if the given item is an object.
+ *
+ * @param item - The item to check.
+ * @returns Returns `true` if the item is an object, `false` otherwise.
+ */
+export function isObject(item: { [x: string]: any }) {
+  return item && typeof item === 'object' && !Array.isArray(item)
+}
+
+/**
+ * Recursively merges the properties of multiple objects into a single object.
+ * @param target - The target object to merge the properties into.
+ * @param sources - The source objects whose properties will be merged into the target object.
+ * @returns The merged object.
+ */
+export function mergeDeep(target: { [x: string]: any }, ...sources: any[]) {
+  if (!sources.length) return target
+  const source = sources.shift()
+
+  if (isObject(target) && isObject(source)) {
+    for (const key in source) {
+      if (isObject(source[key])) {
+        if (!target[key]) Object.assign(target, { [key]: {} })
+        mergeDeep(target[key], source[key])
+      } else {
+        Object.assign(target, { [key]: source[key] })
+      }
+    }
+  }
+
+  return mergeDeep(target, ...sources)
 }

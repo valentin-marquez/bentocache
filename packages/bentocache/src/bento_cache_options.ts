@@ -1,7 +1,7 @@
 import EventEmitter from 'node:events'
-import lodash from '@poppinss/utils/lodash'
 import string from '@poppinss/utils/string'
 import { noopLogger } from 'typescript-log'
+import { mergeDeep } from './helpers.js'
 
 import type {
   Duration,
@@ -76,7 +76,7 @@ export class BentoCacheOptions {
   lockTimeout?: Duration = null
 
   constructor(options: RawBentoCacheOptions) {
-    this.#options = lodash.merge({}, this, options)
+    this.#options = mergeDeep({}, this, options)
 
     this.prefix = this.#options.prefix!
     this.ttl = this.#options.ttl!
@@ -91,7 +91,7 @@ export class BentoCacheOptions {
   }
 
   cloneWith(options: RawBentoCacheOptions) {
-    const newOptions = lodash.merge({}, this.#options, options)
+    const newOptions = mergeDeep({}, this.#options, options)
     return new BentoCacheOptions(newOptions)
   }
 }

@@ -1,11 +1,10 @@
-import lodash from '@poppinss/utils/lodash'
-
 import { Bus } from '../../bus/bus.js'
 import { LocalCache } from '../facades/local_cache.js'
 import { RemoteCache } from '../facades/remote_cache.js'
 import { JsonSerializer } from '../../serializers/json.js'
 import type { BentoCacheOptions } from '../../bento_cache_options.js'
 import { CacheEntryOptions } from '../cache_entry/cache_entry_options.js'
+import { mergeDeep } from '../../helpers.js'
 import type {
   BusDriver,
   BusOptions,
@@ -46,7 +45,7 @@ export class CacheStack {
     if (bus) return bus
     if (!busDriver || !this.l1) return
 
-    const opts = lodash.merge({ retryQueue: { enabled: true, maxSize: undefined } }, busOptions)
+    const opts = mergeDeep({ retryQueue: { enabled: true, maxSize: undefined } }, busOptions)
     const newBus = new Bus(busDriver, this.l1, this.logger, this.emitter, opts)
 
     return newBus
